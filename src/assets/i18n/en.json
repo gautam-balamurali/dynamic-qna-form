@@ -1,3 +1,35 @@
 {
-  "hello": "Hello"
+  "answers_page": {
+    "title": "Review my answers",
+    "empty_header": "No QnA to display!",
+    "no_answer_text": "No answer!",
+    "no_value_added_text": "No value added!",
+    "back_to_forms_builder_button": "Back to Forms Builder"
+  },
+  "builder_page": {
+    "title": "Dynamic QnA Form Builder",
+    "empty_header": "No Questions to display! Click on Add New Question button to add a new question.",
+    "answer_label": "Answer",
+    "value_label": "Value",
+    "other_value": "Other",
+    "add_new_question_button": "Add New Question",
+    "review_answers_button": "Review my Answers"
+  },
+  "questions_dialog_box": {
+    "title": "Add a New Question",
+    "type_label": "Type",
+    "question_label": "Question",
+    "question_placeholder": "Type your question here",
+    "option_label": "Option",
+    "option_placeholder": "Type your option here",
+    "add_new_option_button": "+ Add New Option",
+    "options_hint": "Add upto 5 options",
+    "options_limit_exceeded_hint": "Options limit exceeded",
+    "required_field_error_message": "Please enter required fields",
+    "options_error_message": "Please add 1 or more options",
+    "other_option_selection_label": "Allow user to specify their own answer",
+    "required_field_selection_label": "This field is required",
+    "cancel_button": "Cancel",
+    "submit_button": "Submit"
+  }
 }
