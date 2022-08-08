@@ -1,0 +1,114 @@
+<h1 mat-dialog-title>{{ content?.title }}</h1>
+
+<div mat-dialog-content>
+  <form [formGroup]="questionForm">
+    <!-- Type -->
+    <mat-form-field>
+      <mat-label>{{ content?.type_label }}</mat-label>
+      <mat-select
+        formControlName="type"
+        (selectionChange)="onTypeSelection($event)"
+      >
+        <mat-option *ngFor="let type of questionTypes" [value]="type.value">
+          {{ type.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Question -->
+    <mat-form-field>
+      <mat-label>{{ content?.question_label }}</mat-label>
+      <input
+        matInput
+        [placeholder]="content?.question_placeholder"
+        formControlName="question"
+      />
+    </mat-form-field>
+
+    <!-- Options -->
+    <ng-container *ngIf="questionForm.value.type === 'checkbox'">
+      <div formArrayName="options" class="row">
+        <div *ngFor="let option of options.controls; let index = index">
+          <div [formGroupName]="index">
+            <mat-form-field class="w-90">
+              <mat-label>{{ content?.option_label }}</mat-label>
+              <input
+                matInput
+                [placeholder]="content?.option_placeholder"
+                formControlName="value"
+              />
+            </mat-form-field>
+            <button
+              class="w-10"
+              type="button"
+              mat-icon-button
+              color="warn"
+              (click)="removeOption(index)"
+              matTooltip="Delete"
+            >
+              <mat-icon>delete-outline</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Add Option Button -->
+      <button
+        [disabled]="maxNumberOfOptionsExceeded()"
+        type="button"
+        class="btn-link"
+        mat-button
+        color="primary"
+        (click)="addOption()"
+      >
+        {{ content?.add_new_option_button }}
+      </button>
+      <br />
+      <mat-hint *ngIf="!maxNumberOfOptionsExceeded()">{{
+        content?.options_hint
+      }}</mat-hint>
+      <mat-hint *ngIf="maxNumberOfOptionsExceeded()">{{
+        content?.options_limit_exceeded_hint
+      }}</mat-hint>
+    </ng-container>
+  </form>
+</div>
+
+<!-- Error Messages -->
+<div *ngIf="questionForm.invalid" class="red-highlight">
+  {{ content?.required_field_error_message }}
+</div>
+<div
+  *ngIf="
+    questionForm.value.type === 'checkbox' &&
+    !questionForm.value.options.length &&
+    questionForm.invalid
+  "
+  class="red-highlight"
+>
+  {{ content?.options_error_message }}
+</div>
+
+<div style="margin-top: 25px">
+  <mat-checkbox
+    *ngIf="questionForm.value.type === 'checkbox'"
+    (change)="addOtherOption($event)"
+    >{{ content?.other_option_selection_label }}</mat-checkbox
+  >
+  <br />
+  <mat-checkbox (change)="makeFieldRequired($event)">{{
+    content?.required_field_selection_label
+  }}</mat-checkbox>
+  <!-- Action Buttons -->
+  <div mat-dialog-actions align="center">
+    <button mat-button (click)="cancel()">{{ content?.cancel_button }}</button>
+    <button
+      [disabled]="isSubmitButtonInvalid()"
+      mat-raised-button
+      (click)="submit()"
+      color="primary"
+      cdkFocusInitial
+    >
+      {{ content?.submit_button }}
+    </button>
+  </div>
+</div>

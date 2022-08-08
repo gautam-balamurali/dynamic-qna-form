@@ -1,0 +1,110 @@
+<h1 class="page-title">{{ content?.title }}</h1>
+
+<div class="info" *ngIf="!questions.length">
+  <h2>{{ content?.empty_header }}</h2>
+</div>
+
+<form [formGroup]="qnaForm">
+  <div formArrayName="questions">
+    <div
+      class="section"
+      *ngFor="let qna of questions?.controls; let index = index"
+    >
+      <div [formGroupName]="index">
+        <h2 *ngIf="qna.value.required; else notRequiredQuestion">
+          {{ index + 1 }}. {{ qna.value.question
+          }}<span class="red-highlight">*</span>
+        </h2>
+        <ng-template #notRequiredQuestion>
+          <h2>{{ index + 1 }}. {{ qna.value.question }}</h2></ng-template
+        >
+
+        <!-- Paragraph -->
+        <mat-form-field *ngIf="qna.value.type === 'paragraph'">
+          <mat-label>{{ content?.answer_label }}</mat-label>
+          <textarea
+            *ngIf="qna.value.required; else notRequiredParagraph"
+            matInput
+            formControlName="answer"
+            required
+          ></textarea>
+          <ng-template #notRequiredParagraph>
+            <textarea matInput formControlName="answer"></textarea>
+          </ng-template>
+        </mat-form-field>
+
+        <!-- Checkbox -->
+        <div *ngIf="qna.value.type === 'checkbox'" formArrayName="options">
+          <div
+            *ngFor="
+              let option of getOptions(index, qna.value.required)?.controls;
+              let checkboxIndex = index
+            "
+          >
+            <div
+              *ngIf="qna.value.required; else notRequiredCheckbox"
+              [formGroupName]="checkboxIndex"
+            >
+              <mat-checkbox
+                formControlName="checked"
+                (change)="isReviewAnswersValid($event, option?.value)"
+                >{{ option.value.value }}</mat-checkbox
+              >
+              <mat-form-field
+                *ngIf="
+                  option?.value?.value === 'Other' && option?.value?.checked
+                "
+              >
+                <mat-label>{{ content?.value_label }}</mat-label>
+                <input matInput formControlName="otherValue" required />
+              </mat-form-field>
+            </div>
+            <ng-template #notRequiredCheckbox>
+              <div [formGroupName]="checkboxIndex">
+                <mat-checkbox formControlName="checked">{{
+                  option.value.value
+                }}</mat-checkbox>
+                <mat-form-field
+                  *ngIf="
+                    option?.value?.value === content?.other_value &&
+                    option?.value?.checked
+                  "
+                >
+                  <mat-label>{{ content?.value_label }}</mat-label>
+                  <input matInput formControlName="otherValue" />
+                </mat-form-field>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="btn-center">
+    <button
+      type="button"
+      class="mat-btn"
+      mat-raised-button
+      color="primary"
+      (click)="openQuestionDialog()"
+    >
+      {{ content?.add_new_question_button }}
+    </button>
+    <button
+      [disabled]="
+        !questions.length ||
+        qnaForm.invalid ||
+        (checkboxTypeRequiredExists && !selectedOptions.length)
+      "
+      type="button"
+      class="mat-btn"
+      mat-button
+      color="primary"
+      (click)="reviewAnswers()"
+    >
+      {{ content?.review_answers_button }}
+    </button>
+  </div>
+</form>

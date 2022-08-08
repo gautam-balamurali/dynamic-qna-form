@@ -1,0 +1,41 @@
+<h1 class="page-title">{{ content?.title }}</h1>
+
+<div class="info" *ngIf="!qna.length">
+  <h2>{{ content?.empty_header }}</h2>
+</div>
+
+<div class="section" *ngFor="let obj of qna; let index = index">
+  <!-- Question -->
+  <h2>{{ index + 1 }}. {{ obj.question }}</h2>
+
+  <!-- Paragraph Answer -->
+  <p *ngIf="obj.type === 'paragraph'">
+    {{ obj.answer || content?.no_answer_text }}
+  </p>
+
+  <!-- Checkbox Answer -->
+  <ul *ngIf="obj.type === 'checkbox'">
+    <ng-container *ngFor="let opt of obj.options">
+      <li *ngIf="opt.checked">
+        {{ opt.value }}
+        <span *ngIf="opt.value === 'Other'">
+          - {{ opt.otherValue || content?.no_value_added_text }}
+        </span>
+      </li>
+    </ng-container>
+    <p *ngIf="noOptionSelected(obj)">{{ content?.no_answer_text }}</p>
+  </ul>
+</div>
+
+<!-- Action Button -->
+<div class="btn-center">
+  <button
+    type="button"
+    class="mat-btn"
+    mat-raised-button
+    color="primary"
+    (click)="backToFormBuilder()"
+  >
+    {{ content?.back_to_forms_builder_button }}
+  </button>
+</div>
